@@ -13,3 +13,12 @@ after_success:
 notifications:
   email:
   - herve.tchepannou@gmail.com
+
+deploy:
+  provider: releases
+  user: "$USER_ID"
+  password: "$USER_PWD"
+  file: target/
+  skip_cleanup: true
+  on:
+    tags: true
