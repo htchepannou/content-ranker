@@ -3,7 +3,6 @@ package com.tchepannou.kiosk.ranker;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,65 +12,51 @@ import static org.mockito.Mockito.when;
 public class RankerTest {
 
     @Test
-    public void testRank() throws Exception {
+    public void shouldRank() throws Exception {
         // Given
-        final Rankable r1 = createRankable();
-        final Rankable r2 = createRankable();
-        final Rankable r3 = createRankable();
+        final Rankable r1 = mock(Rankable.class);
+        final Rankable r2 = mock(Rankable.class);
+        final Rankable r3 = mock(Rankable.class);
 
-        final Comparator<Rankable> cmpA = createComparator(Arrays.asList(r1, r2, r3));
-        final Comparator<Rankable> cmpB = createComparator(Arrays.asList(r1, r3, r2));
-        final Comparator<Rankable> cmpC = createComparator(Arrays.asList(r2, r3, r1));
+        final ScoreProvider sp1 = mock(ScoreProvider.class);
+        when(sp1.get(r1)).thenReturn(0);
+        when(sp1.get(r2)).thenReturn(600);
+        when(sp1.get(r3)).thenReturn(1000);
 
-        final Dimension dimA = createDimension(.25, cmpA);
-        final Dimension dimB = createDimension(.30, cmpB);
-        final Dimension dimC = createDimension(.45, cmpC);
+        final ScoreProvider sp2 = mock(ScoreProvider.class);
+        when(sp2.get(r1)).thenReturn(100);
+        when(sp2.get(r2)).thenReturn(50);
+        when(sp2.get(r3)).thenReturn(75);
 
-        final DimensionSetProvider dimensionSetProvider = createDimensionSetProvider(Arrays.asList(dimA, dimB, dimC));
-        final RankerContext ctx = createRankerContext(dimensionSetProvider);
+        final Dimension d1 = createDimension(.6, sp1);
+        final Dimension d2 = createDimension(.4, sp2);
+
+        final RankerContext rc = () -> Arrays.asList(d1, d2);
 
         // When
-        List<RankEntry> entries = new Ranker().rank(Arrays.asList(r1, r2, r3), ctx);
+        final List<Score> scores = new Ranker().rank(Arrays.asList(r1, r2, r3), rc);
 
         // Then
-        assertThat(entries).hasSize(3);
+        assertThat(scores.get(0).getRankable()).isEqualTo(r1);
+        assertThat(scores.get(0).getValue(d1)).isEqualTo(0);
+        assertThat(scores.get(0).getValue(d2)).isEqualTo(100);
+        assertThat(scores.get(0).getValue()).isEqualTo(40);
 
-        assertThat(entries.get(0).getRankable()).isEqualTo(r2);
-        assertThat((float)entries.get(0).getFinalRank()).isEqualTo(1.85f);
+        assertThat(scores.get(1).getRankable()).isEqualTo(r2);
+        assertThat(scores.get(1).getValue(d1)).isEqualTo(60);
+        assertThat(scores.get(1).getValue(d2)).isEqualTo(50);
+        assertThat(scores.get(1).getValue()).isEqualTo(56);
 
-        assertThat(entries.get(1).getRankable()).isEqualTo(r1);
-        assertThat((float)entries.get(1).getFinalRank()).isEqualTo(1.9f);
-
-        assertThat(entries.get(2).getRankable()).isEqualTo(r3);
-        assertThat((float)entries.get(2).getFinalRank()).isEqualTo(2.25f);
+        assertThat(scores.get(2).getRankable()).isEqualTo(r3);
+        assertThat(scores.get(2).getValue(d1)).isEqualTo(100);
+        assertThat(scores.get(2).getValue(d2)).isEqualTo(75);
+        assertThat(scores.get(2).getValue()).isEqualTo(90);
     }
 
-
-    private RankerContext createRankerContext(final DimensionSetProvider provider){
-        return new RankerContext() {
-            @Override
-            public DimensionSetProvider getDimensionSetProvider() {
-                return provider;
-            }
-        };
-    }
-    private DimensionSetProvider createDimensionSetProvider(final List<Dimension> dimensions){
-        return () -> dimensions;
-    }
-
-    private Comparator<Rankable> createComparator(final List<Rankable> rankables){
-        return (r1, r2) -> rankables.indexOf(r1) - rankables.indexOf(r2);
-    }
-
-    private Dimension createDimension(final double weight, final Comparator<Rankable> comparator) {
+    private Dimension createDimension(final double v, final ScoreProvider sp1) {
         final Dimension dim = mock(Dimension.class);
-        when(dim.getWeight()).thenReturn(weight);
-        when(dim.getComparator()).thenReturn(comparator);
+        when(dim.getScoreProvider()).thenReturn(sp1);
+        when(dim.getWeight()).thenReturn(v);
         return dim;
     }
-
-    private Rankable createRankable() {
-        return mock(Rankable.class);
-    }
-
 }
