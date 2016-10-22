@@ -5,7 +5,7 @@ import com.tchepannou.kiosk.ranker.ScoreProvider;
 
 public class ContentLengthScoreProvider implements ScoreProvider {
     @Override
-    public int get(final Rankable rankable) {
+    public long get(final Rankable rankable) {
         return rankable.getContentLength();
     }
 }

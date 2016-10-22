@@ -19,14 +19,14 @@ public class RankerTest {
         final Rankable r3 = mock(Rankable.class);
 
         final ScoreProvider sp1 = mock(ScoreProvider.class);
-        when(sp1.get(r1)).thenReturn(0);
-        when(sp1.get(r2)).thenReturn(600);
-        when(sp1.get(r3)).thenReturn(1000);
+        when(sp1.get(r1)).thenReturn(0L);
+        when(sp1.get(r2)).thenReturn(600L);
+        when(sp1.get(r3)).thenReturn(1000L);
 
         final ScoreProvider sp2 = mock(ScoreProvider.class);
-        when(sp2.get(r1)).thenReturn(100);
-        when(sp2.get(r2)).thenReturn(50);
-        when(sp2.get(r3)).thenReturn(75);
+        when(sp2.get(r1)).thenReturn(100L);
+        when(sp2.get(r2)).thenReturn(50L);
+        when(sp2.get(r3)).thenReturn(75L);
 
         final Dimension d1 = createDimension(.6, sp1);
         final Dimension d2 = createDimension(.4, sp2);

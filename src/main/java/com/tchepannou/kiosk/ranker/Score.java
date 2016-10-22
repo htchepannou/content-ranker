@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Score {
     private final Rankable rankable;
-    private final Map<Dimension, Integer> values = new HashMap<>();
+    private final Map<Dimension, Long> values = new HashMap<>();
     private Integer value;
 
     public Score(final Rankable rankable) {
@@ -25,12 +25,12 @@ public class Score {
         return value;
     }
 
-    public void setValue(final Dimension dimension, final int score) {
+    public void setValue(final Dimension dimension, final long score) {
         values.put(dimension, score);
         value = null;
     }
 
-    public int getValue(final Dimension dimension) {
+    public long getValue(final Dimension dimension) {
         return values.containsKey(dimension) ? values.get(dimension) : 0;
     }
 }

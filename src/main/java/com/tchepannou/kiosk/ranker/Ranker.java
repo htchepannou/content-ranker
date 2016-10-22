@@ -21,9 +21,9 @@ public class Ranker {
     private void compute(final List<Score> scores, final Dimension dimension) {
 
         // Raw score
-        int max = 0;
+        long max = 0;
         for (final Score score : scores){
-            final int value = dimension.getScoreProvider().get(score.getRankable());
+            final long value = dimension.getScoreProvider().get(score.getRankable());
             if (value > max){
                 max = value;
             }
@@ -36,7 +36,7 @@ public class Ranker {
 
         // Adjusted score
         for (final Score score : scores){
-            final int value = 100*score.getValue(dimension)/max;
+            final long value = 100*score.getValue(dimension)/max;
             score.setValue(dimension, value);
         }
     }
