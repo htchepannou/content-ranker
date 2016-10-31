@@ -1,5 +1,5 @@
 package com.tchepannou.kiosk.ranker;
 
 public interface ScoreProvider {
-    long get(Rankable rankable);
+    long get(Rankable rankable, RankerContext context);
 }

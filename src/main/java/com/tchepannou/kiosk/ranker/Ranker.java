@@ -10,7 +10,7 @@ public class Ranker {
                 .collect(Collectors.toList());
 
         for (final Dimension dimension : context.getDimensions()){
-            compute(scores, dimension);
+            compute(scores, dimension, context);
         }
 
         return scores.stream()
@@ -18,12 +18,12 @@ public class Ranker {
                 .collect(Collectors.toList());
     }
 
-    private void compute(final List<Score> scores, final Dimension dimension) {
+    private void compute(final List<Score> scores, final Dimension dimension, final RankerContext context) {
 
         // Raw score
         long max = 0;
         for (final Score score : scores){
-            final long value = dimension.getScoreProvider().get(score.getRankable());
+            final long value = dimension.getScoreProvider().get(score.getRankable(), context);
             if (value > max){
                 max = value;
             }

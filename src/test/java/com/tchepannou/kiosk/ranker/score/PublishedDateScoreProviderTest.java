@@ -1,6 +1,7 @@
 package com.tchepannou.kiosk.ranker.score;
 
 import com.tchepannou.kiosk.ranker.Rankable;
+import com.tchepannou.kiosk.ranker.RankerContext;
 import com.tchepannou.kiosk.ranker.ScoreProvider;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
@@ -28,8 +29,9 @@ public class PublishedDateScoreProviderTest {
         final Rankable r2 = mock(Rankable.class);
         when(r2.getPublishedDate()).thenReturn(d2);
 
+        RankerContext ctx = mock(RankerContext.class);
 
-        assertThat(provider.get(r1)).isEqualTo(provider.get(r2));
+        assertThat(provider.get(r1, ctx)).isEqualTo(provider.get(r2, ctx));
     }
 
     @Test
@@ -44,7 +46,8 @@ public class PublishedDateScoreProviderTest {
         final Rankable r2 = mock(Rankable.class);
         when(r2.getPublishedDate()).thenReturn(d2);
 
+        RankerContext ctx = mock(RankerContext.class);
 
-        assertThat(provider.get(r1)).isLessThan(provider.get(r2));
+        assertThat(provider.get(r1, ctx)).isLessThan(provider.get(r2, ctx));
     }
 }
